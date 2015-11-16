@@ -222,12 +222,14 @@
   
   <path id="unidataworkbench.module.production.classpath">
     <path refid="${module.jdk.classpath.unidataworkbench}"/>
+    <path refid="library.uniwork.classpath"/>
     <pathelement location="${unidata.output.dir}"/>
     <path refid="library.unigraph.classpath"/>
   </path>
   
   <path id="unidataworkbench.runtime.production.module.classpath">
     <pathelement location="${unidataworkbench.output.dir}"/>
+    <path refid="library.uniwork.classpath"/>
     <path refid="unidata.runtime.production.module.classpath"/>
     <path refid="library.unigraph.classpath"/>
   </path>
@@ -235,6 +237,7 @@
   <path id="unidataworkbench.module.classpath">
     <path refid="${module.jdk.classpath.unidataworkbench}"/>
     <pathelement location="${unidataworkbench.output.dir}"/>
+    <path refid="library.uniwork.classpath"/>
     <pathelement location="${unidata.testoutput.dir}"/>
     <pathelement location="${unidata.output.dir}"/>
     <path refid="library.unigraph.classpath"/>
@@ -243,6 +246,7 @@
   <path id="unidataworkbench.runtime.module.classpath">
     <pathelement location="${unidataworkbench.testoutput.dir}"/>
     <pathelement location="${unidataworkbench.output.dir}"/>
+    <path refid="library.uniwork.classpath"/>
     <path refid="unidata.runtime.module.classpath"/>
     <path refid="library.unigraph.classpath"/>
   </path>

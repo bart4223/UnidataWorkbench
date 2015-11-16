@@ -7,6 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Uniwork" level="project" />
     <orderEntry type="module" module-name="Unidata" />
     <orderEntry type="library" name="Unigraph" level="project" />
   </component>
