@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Unigraph">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Unigraph/out/artifacts/Unigraph_jar/Unigraph.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

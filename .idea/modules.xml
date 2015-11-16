@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Unidata/Unidata.iml" filepath="$PROJECT_DIR$/../Unidata/Unidata.iml" />
       <module fileurl="file://$PROJECT_DIR$/UnidataWorkbench.iml" filepath="$PROJECT_DIR$/UnidataWorkbench.iml" />
     </modules>
   </component>

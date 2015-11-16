@@ -91,6 +91,17 @@
   <property name="project.jdk.home" value="${jdk.home.1.7}"/>
   <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
   <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.unigraph.classpath">
+    <pathelement location="${basedir}/../Unigraph/out/artifacts/Unigraph_jar/Unigraph.jar"/>
+  </path>
+  
+  <path id="library.uniwork.classpath">
+    <pathelement location="${basedir}/../Uniwork/out/artifacts/Uniwork_jar/Uniwork.jar"/>
+  </path>
   <!-- Register Custom Compiler Taskdefs -->
   <property name="javac2.home" value="${idea.home}/lib"/>
   <path id="javac2.classpath">
@@ -107,6 +118,90 @@
   <!-- Modules -->
   
   
+  <!-- Module Unidata -->
+  
+  <dirname property="module.unidata.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.unidata" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.unidata" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.unidata" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.unidata" value="-encoding UTF-8 -source 1.7 -target 1.7 ${compiler.args}"/>
+  
+  <property name="unidata.output.dir" value="${module.unidata.basedir}/out/production/Unidata"/>
+  <property name="unidata.testoutput.dir" value="${module.unidata.basedir}/out/test/Unidata"/>
+  
+  <path id="unidata.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="unidata.module.production.classpath">
+    <path refid="${module.jdk.classpath.unidata}"/>
+    <path refid="library.uniwork.classpath"/>
+  </path>
+  
+  <path id="unidata.runtime.production.module.classpath">
+    <pathelement location="${unidata.output.dir}"/>
+    <path refid="library.uniwork.classpath"/>
+  </path>
+  
+  <path id="unidata.module.classpath">
+    <path refid="${module.jdk.classpath.unidata}"/>
+    <pathelement location="${unidata.output.dir}"/>
+    <path refid="library.uniwork.classpath"/>
+  </path>
+  
+  <path id="unidata.runtime.module.classpath">
+    <pathelement location="${unidata.testoutput.dir}"/>
+    <pathelement location="${unidata.output.dir}"/>
+    <path refid="library.uniwork.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.unidata">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.unidata">
+    <patternset refid="excluded.from.module.unidata"/>
+  </patternset>
+  
+  <path id="unidata.module.sourcepath">
+    <dirset dir="${module.unidata.basedir}/../Unidata">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.unidata" depends="compile.module.unidata.production,compile.module.unidata.tests" description="Compile module Unidata"/>
+  
+  <target name="compile.module.unidata.production" depends="register.custom.compilers" description="Compile module Unidata; production classes">
+    <mkdir dir="${unidata.output.dir}"/>
+    <javac2 destdir="${unidata.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.unidata}/javac">
+      <compilerarg line="${compiler.args.unidata}"/>
+      <bootclasspath refid="unidata.module.bootclasspath"/>
+      <classpath refid="unidata.module.production.classpath"/>
+      <src refid="unidata.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.unidata"/>
+    </javac2>
+    
+    <copy todir="${unidata.output.dir}">
+      <fileset dir="${module.unidata.basedir}/../Unidata/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.unidata.tests" depends="register.custom.compilers,compile.module.unidata.production" description="compile module Unidata; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.unidata" description="cleanup module">
+    <delete dir="${unidata.output.dir}"/>
+    <delete dir="${unidata.testoutput.dir}"/>
+  </target>
+  
+  
   <!-- Module UnidataWorkbench -->
   
   <dirname property="module.unidataworkbench.basedir" file="${ant.file}"/>
@@ -116,7 +211,7 @@
   <property name="module.jdk.bin.unidataworkbench" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.unidataworkbench" value="${project.jdk.classpath}"/>
   
-  <property name="compiler.args.unidataworkbench" value="-encoding UTF-8 -source 1.6 -target 1.6 ${compiler.args}"/>
+  <property name="compiler.args.unidataworkbench" value="-encoding UTF-8 -source 1.7 -target 1.7 ${compiler.args}"/>
   
   <property name="unidataworkbench.output.dir" value="${module.unidataworkbench.basedir}/out/production/UnidataWorkbench"/>
   <property name="unidataworkbench.testoutput.dir" value="${module.unidataworkbench.basedir}/out/test/UnidataWorkbench"/>
@@ -127,20 +222,29 @@
   
   <path id="unidataworkbench.module.production.classpath">
     <path refid="${module.jdk.classpath.unidataworkbench}"/>
+    <pathelement location="${unidata.output.dir}"/>
+    <path refid="library.unigraph.classpath"/>
   </path>
   
   <path id="unidataworkbench.runtime.production.module.classpath">
     <pathelement location="${unidataworkbench.output.dir}"/>
+    <path refid="unidata.runtime.production.module.classpath"/>
+    <path refid="library.unigraph.classpath"/>
   </path>
   
   <path id="unidataworkbench.module.classpath">
     <path refid="${module.jdk.classpath.unidataworkbench}"/>
     <pathelement location="${unidataworkbench.output.dir}"/>
+    <pathelement location="${unidata.testoutput.dir}"/>
+    <pathelement location="${unidata.output.dir}"/>
+    <path refid="library.unigraph.classpath"/>
   </path>
   
   <path id="unidataworkbench.runtime.module.classpath">
     <pathelement location="${unidataworkbench.testoutput.dir}"/>
     <pathelement location="${unidataworkbench.output.dir}"/>
+    <path refid="unidata.runtime.module.classpath"/>
+    <path refid="library.unigraph.classpath"/>
   </path>
   
   
@@ -152,10 +256,32 @@
     <patternset refid="excluded.from.module.unidataworkbench"/>
   </patternset>
   
+  <path id="unidataworkbench.module.sourcepath">
+    <dirset dir="${module.unidataworkbench.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
   
   <target name="compile.module.unidataworkbench" depends="compile.module.unidataworkbench.production,compile.module.unidataworkbench.tests" description="Compile module UnidataWorkbench"/>
   
-  <target name="compile.module.unidataworkbench.production" depends="register.custom.compilers" description="Compile module UnidataWorkbench; production classes"/>
+  <target name="compile.module.unidataworkbench.production" depends="register.custom.compilers,compile.module.unidata" description="Compile module UnidataWorkbench; production classes">
+    <mkdir dir="${unidataworkbench.output.dir}"/>
+    <javac2 destdir="${unidataworkbench.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.unidataworkbench}/javac">
+      <compilerarg line="${compiler.args.unidataworkbench}"/>
+      <bootclasspath refid="unidataworkbench.module.bootclasspath"/>
+      <classpath refid="unidataworkbench.module.production.classpath"/>
+      <src refid="unidataworkbench.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.unidataworkbench"/>
+    </javac2>
+    
+    <copy todir="${unidataworkbench.output.dir}">
+      <fileset dir="${module.unidataworkbench.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
   
   <target name="compile.module.unidataworkbench.tests" depends="register.custom.compilers,compile.module.unidataworkbench.production" description="compile module UnidataWorkbench; test classes" unless="skip.tests"/>
   
@@ -168,9 +294,35 @@
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.unidataworkbench" description="cleanup all"/>
+  <target name="clean" depends="clean.module.unidata, clean.module.unidataworkbench" description="cleanup all"/>
   
-  <target name="build.modules" depends="init, clean, compile.module.unidataworkbench" description="build all modules"/>
+  <target name="build.modules" depends="init, clean, compile.module.unidata, compile.module.unidataworkbench" description="build all modules"/>
   
-  <target name="all" depends="build.modules" description="build all"/>
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.unidataworkbench:jar" value="${basedir}/out/artifacts/UnidataWorkbench_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.UnidataWorkbench.jar" value="${artifacts.temp.dir}/UnidataWorkbench.jar"/>
+  </target>
+  
+  <target name="artifact.unidataworkbench:jar" depends="init.artifacts, compile.module.unidataworkbench" description="Build &#39;UnidataWorkbench:jar&#39; artifact">
+    <property name="artifact.temp.output.unidataworkbench:jar" value="${artifacts.temp.dir}/UnidataWorkbench_jar"/>
+    <mkdir dir="${artifact.temp.output.unidataworkbench:jar}"/>
+    <jar destfile="${temp.jar.path.UnidataWorkbench.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${unidataworkbench.output.dir}"/>
+    </jar>
+    <copy file="${temp.jar.path.UnidataWorkbench.jar}" tofile="${artifact.temp.output.unidataworkbench:jar}/UnidataWorkbench.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.unidataworkbench:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.unidataworkbench:jar}"/>
+    <copy todir="${artifact.output.unidataworkbench:jar}">
+      <fileset dir="${artifact.temp.output.unidataworkbench:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
 </project>
