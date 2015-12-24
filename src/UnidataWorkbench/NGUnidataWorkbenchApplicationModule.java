@@ -11,6 +11,7 @@ public class NGUnidataWorkbenchApplicationModule extends NGVisualApplicationModu
     @Override
     protected void DoBeforeInitialize() {
         super.DoBeforeInitialize();
+        setDescription("Unidata Workbench");
         NGCustomStageItem item = FStageManager.addStageItem("Main", FPrimaryStage);
         item.setCaption(getDescription());
         item.setPosition(350, 200);
@@ -18,7 +19,6 @@ public class NGUnidataWorkbenchApplicationModule extends NGVisualApplicationModu
 
     public NGUnidataWorkbenchApplicationModule(NGComponent aOwner, String aName) {
         super(aOwner, aName);
-        FDescription = "Unidata Workbench";
         FWorkbenchManager = new NGUDWorkbenchManager(this, "WorkbenchManager");
         FComponentManager.registerComponent(FWorkbenchManager);
         FStageManager.registerItemClass("Main", "UnidataWorkbench.UI.NGUDWorkbenchMainStageItem");
