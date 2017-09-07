@@ -94,6 +94,10 @@
   
   <!-- Project Libraries -->
   
+  <path id="library.ant.classpath">
+    <pathelement location="${basedir}/../libs/ant.jar"/>
+  </path>
+  
   <path id="library.hamcrest-core-1.3.classpath">
     <pathelement location="${basedir}/../libs/hamcrest-core-1.3.jar"/>
   </path>
@@ -148,6 +152,7 @@
     <path refid="library.uniwork.classpath"/>
     <path refid="library.hamcrest-core-1.3.classpath"/>
     <path refid="library.junit-4.12.classpath"/>
+    <path refid="library.ant.classpath"/>
   </path>
   
   <path id="unidata.runtime.production.module.classpath">
@@ -155,6 +160,7 @@
     <path refid="library.uniwork.classpath"/>
     <path refid="library.hamcrest-core-1.3.classpath"/>
     <path refid="library.junit-4.12.classpath"/>
+    <path refid="library.ant.classpath"/>
   </path>
   
   <path id="unidata.module.classpath">
@@ -163,6 +169,7 @@
     <path refid="library.uniwork.classpath"/>
     <path refid="library.hamcrest-core-1.3.classpath"/>
     <path refid="library.junit-4.12.classpath"/>
+    <path refid="library.ant.classpath"/>
   </path>
   
   <path id="unidata.runtime.module.classpath">
@@ -171,6 +178,7 @@
     <path refid="library.uniwork.classpath"/>
     <path refid="library.hamcrest-core-1.3.classpath"/>
     <path refid="library.junit-4.12.classpath"/>
+    <path refid="library.ant.classpath"/>
   </path>
   
   
