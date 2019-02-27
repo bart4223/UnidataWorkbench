@@ -32,13 +32,14 @@
     <exclude name="**/vssver2.scc/**"/>
   </patternset>
   <patternset id="library.patterns">
-    <include name="*.egg"/>
-    <include name="*.jar"/>
-    <include name="*.ane"/>
-    <include name="*.ear"/>
-    <include name="*.swc"/>
     <include name="*.war"/>
+    <include name="*.swc"/>
     <include name="*.zip"/>
+    <include name="*.egg"/>
+    <include name="*.ane"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.klib"/>
   </patternset>
   <patternset id="compiler.resources">
     <exclude name="**/?*.java"/>
@@ -112,10 +113,12 @@
   <!-- Register Custom Compiler Taskdefs -->
   <property name="javac2.home" value="${idea.home}/lib"/>
   <path id="javac2.classpath">
-    <pathelement location="${javac2.home}/javac2.jar"/>
-    <pathelement location="${javac2.home}/jdom.jar"/>
-    <pathelement location="${javac2.home}/asm-all.jar"/>
-    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+    <fileset dir="${javac2.home}">
+      <include name="javac2.jar"/>
+      <include name="jdom.jar"/>
+      <include name="asm-all*.jar"/>
+      <include name="forms-*.jar"/>
+    </fileset>
   </path>
   <target name="register.custom.compilers">
     <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
@@ -124,186 +127,9 @@
   
   <!-- Modules -->
   
+  <import file="${basedir}/../Unidata/module_unidata.xml"/>
   
-  <!-- Module Unidata -->
-  
-  <dirname property="module.unidata.basedir" file="${ant.file}"/>
-  
-  
-  <property name="module.jdk.home.unidata" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.unidata" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.unidata" value="${project.jdk.classpath}"/>
-  
-  <property name="compiler.args.unidata" value="-encoding UTF-8 -source 1.7 -target 1.7 ${compiler.args}"/>
-  
-  <property name="unidata.output.dir" value="${module.unidata.basedir}/out/production/Unidata"/>
-  <property name="unidata.testoutput.dir" value="${module.unidata.basedir}/out/test/Unidata"/>
-  
-  <path id="unidata.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="unidata.module.production.classpath">
-    <path refid="${module.jdk.classpath.unidata}"/>
-    <path refid="library.uniwork.classpath"/>
-    <path refid="library.hamcrest-core-1.3.classpath"/>
-    <path refid="library.junit-4.12.classpath"/>
-  </path>
-  
-  <path id="unidata.runtime.production.module.classpath">
-    <pathelement location="${unidata.output.dir}"/>
-    <path refid="library.uniwork.classpath"/>
-    <path refid="library.hamcrest-core-1.3.classpath"/>
-    <path refid="library.junit-4.12.classpath"/>
-  </path>
-  
-  <path id="unidata.module.classpath">
-    <path refid="${module.jdk.classpath.unidata}"/>
-    <pathelement location="${unidata.output.dir}"/>
-    <path refid="library.uniwork.classpath"/>
-    <path refid="library.hamcrest-core-1.3.classpath"/>
-    <path refid="library.junit-4.12.classpath"/>
-  </path>
-  
-  <path id="unidata.runtime.module.classpath">
-    <pathelement location="${unidata.testoutput.dir}"/>
-    <pathelement location="${unidata.output.dir}"/>
-    <path refid="library.uniwork.classpath"/>
-    <path refid="library.hamcrest-core-1.3.classpath"/>
-    <path refid="library.junit-4.12.classpath"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.unidata">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.unidata">
-    <patternset refid="excluded.from.module.unidata"/>
-  </patternset>
-  
-  <path id="unidata.module.sourcepath">
-    <dirset dir="${module.unidata.basedir}/../Unidata">
-      <include name="src"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.unidata" depends="compile.module.unidata.production,compile.module.unidata.tests" description="Compile module Unidata"/>
-  
-  <target name="compile.module.unidata.production" depends="register.custom.compilers" description="Compile module Unidata; production classes">
-    <mkdir dir="${unidata.output.dir}"/>
-    <javac2 destdir="${unidata.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.unidata}/javac">
-      <compilerarg line="${compiler.args.unidata}"/>
-      <bootclasspath refid="unidata.module.bootclasspath"/>
-      <classpath refid="unidata.module.production.classpath"/>
-      <src refid="unidata.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.unidata"/>
-    </javac2>
-    
-    <copy todir="${unidata.output.dir}">
-      <fileset dir="${module.unidata.basedir}/../Unidata/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="compile.module.unidata.tests" depends="register.custom.compilers,compile.module.unidata.production" description="compile module Unidata; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.unidata" description="cleanup module">
-    <delete dir="${unidata.output.dir}"/>
-    <delete dir="${unidata.testoutput.dir}"/>
-  </target>
-  
-  
-  <!-- Module UnidataWorkbench -->
-  
-  <dirname property="module.unidataworkbench.basedir" file="${ant.file}"/>
-  
-  
-  <property name="module.jdk.home.unidataworkbench" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.unidataworkbench" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.unidataworkbench" value="${project.jdk.classpath}"/>
-  
-  <property name="compiler.args.unidataworkbench" value="-encoding UTF-8 -source 1.7 -target 1.7 ${compiler.args}"/>
-  
-  <property name="unidataworkbench.output.dir" value="${module.unidataworkbench.basedir}/out/production/UnidataWorkbench"/>
-  <property name="unidataworkbench.testoutput.dir" value="${module.unidataworkbench.basedir}/out/test/UnidataWorkbench"/>
-  
-  <path id="unidataworkbench.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="unidataworkbench.module.production.classpath">
-    <path refid="${module.jdk.classpath.unidataworkbench}"/>
-    <pathelement location="${unidata.output.dir}"/>
-    <path refid="library.unigraph.classpath"/>
-  </path>
-  
-  <path id="unidataworkbench.runtime.production.module.classpath">
-    <pathelement location="${unidataworkbench.output.dir}"/>
-    <path refid="unidata.runtime.production.module.classpath"/>
-    <path refid="library.unigraph.classpath"/>
-  </path>
-  
-  <path id="unidataworkbench.module.classpath">
-    <path refid="${module.jdk.classpath.unidataworkbench}"/>
-    <pathelement location="${unidataworkbench.output.dir}"/>
-    <pathelement location="${unidata.testoutput.dir}"/>
-    <pathelement location="${unidata.output.dir}"/>
-    <path refid="library.unigraph.classpath"/>
-  </path>
-  
-  <path id="unidataworkbench.runtime.module.classpath">
-    <pathelement location="${unidataworkbench.testoutput.dir}"/>
-    <pathelement location="${unidataworkbench.output.dir}"/>
-    <path refid="unidata.runtime.module.classpath"/>
-    <path refid="library.unigraph.classpath"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.unidataworkbench">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.unidataworkbench">
-    <patternset refid="excluded.from.module.unidataworkbench"/>
-  </patternset>
-  
-  <path id="unidataworkbench.module.sourcepath">
-    <dirset dir="${module.unidataworkbench.basedir}">
-      <include name="src"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.unidataworkbench" depends="compile.module.unidataworkbench.production,compile.module.unidataworkbench.tests" description="Compile module UnidataWorkbench"/>
-  
-  <target name="compile.module.unidataworkbench.production" depends="register.custom.compilers,compile.module.unidata" description="Compile module UnidataWorkbench; production classes">
-    <mkdir dir="${unidataworkbench.output.dir}"/>
-    <javac2 destdir="${unidataworkbench.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.unidataworkbench}/javac">
-      <compilerarg line="${compiler.args.unidataworkbench}"/>
-      <bootclasspath refid="unidataworkbench.module.bootclasspath"/>
-      <classpath refid="unidataworkbench.module.production.classpath"/>
-      <src refid="unidataworkbench.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.unidataworkbench"/>
-    </javac2>
-    
-    <copy todir="${unidataworkbench.output.dir}">
-      <fileset dir="${module.unidataworkbench.basedir}/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="compile.module.unidataworkbench.tests" depends="register.custom.compilers,compile.module.unidataworkbench.production" description="compile module UnidataWorkbench; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.unidataworkbench" description="cleanup module">
-    <delete dir="${unidataworkbench.output.dir}"/>
-    <delete dir="${unidataworkbench.testoutput.dir}"/>
-  </target>
+  <import file="${basedir}/module_unidataworkbench.xml"/>
   
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
